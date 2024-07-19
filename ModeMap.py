@@ -13,7 +13,7 @@ import numpy as np;
 
 from phonopy import Phonopy;
 from phonopy.file_IO import parse_FORCE_SETS, parse_FORCE_CONSTANTS;
-from phonopy.interface.vasp import read_vasp;
+from phonopy.interface.calculator import read_crystal_structure;
 
 
 # Parse command-line arguments.
@@ -38,6 +38,13 @@ group1.add_argument(
     metavar = "cell_file",
     type = str, dest = 'CellFile',
     help = "POSCAR file to read (default: POSCAR)"
+    );
+
+group1.add_argument(
+    "-i", "--interface",
+    metavar = "interface",
+    type = str, dest = 'Interface',
+    help = "Interface mode (default: vasp)"
     );
 
 group1.add_argument(
@@ -186,7 +193,11 @@ else:
 
 # Read the structure file.
 
-structure = read_vasp(args.CellFile);
+#structure = read_vasp(args.CellFile);
+if args.Interface != None:
+    structure, _ = read_crystal_structure(args.CellFile, interface_mode=args.Interface);
+else:
+    structure, _ = read_crystal_structure(args.CellFile);
 
 # Set up a Phonopy object to do the "heavy lifting" of generating the modulated structures.
 
